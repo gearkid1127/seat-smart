@@ -1,11 +1,41 @@
+"use client";
+
 import AppShell from "./components/layout/AppShell";
+import { useSeatSmartStore } from "../store/useSeatSmartStore";
 
 export default function Home() {
+  const classes = useSeatSmartStore((state) => state.classes);
+  const selectedClassId = useSeatSmartStore((state) => state.selectedClassId);
+  const selectClass = useSeatSmartStore((state) => state.selectClass);
+  const addClass = useSeatSmartStore((state) => state.addClass);
+
+    const selectedClass = classes.find(
+    (classroom) => classroom.id === selectedClassId
+  );
+
   return (
     <AppShell
       sidebar={
         <div className="p-4">
           <h2 className="text-lg font-semibold">Classes</h2>
+
+          <button
+            onClick={() => addClass(`Class ${classes.length + 1}`)}
+            className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white"
+          >
+            Add Class
+          </button>
+
+          <div className="mt-4 space-y-2">
+            {classes.map((classroom) => (
+              <div
+                key={classroom.id}
+                className="rounded-md border border-slate-200 px-3 py-2"
+              >
+                {classroom.name}
+              </div>
+            ))}
+          </div>
         </div>
       }
       topbar={

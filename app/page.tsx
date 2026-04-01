@@ -2,6 +2,7 @@
 
 import AppShell from "./components/layout/AppShell";
 import { useSeatSmartStore } from "../store/useSeatSmartStore";
+import StudentList from "@/app/components/students/StudentList";
 
 export default function Home() {
   const classes = useSeatSmartStore((state) => state.classes);
@@ -9,8 +10,8 @@ export default function Home() {
   const selectClass = useSeatSmartStore((state) => state.selectClass);
   const addClass = useSeatSmartStore((state) => state.addClass);
 
-    const selectedClass = classes.find(
-    (classroom) => classroom.id === selectedClassId
+  const selectedClass = classes.find(
+    (classroom) => classroom.id === selectedClassId,
   );
 
   return (
@@ -27,14 +28,23 @@ export default function Home() {
           </button>
 
           <div className="mt-4 space-y-2">
-            {classes.map((classroom) => (
-              <div
-                key={classroom.id}
-                className="rounded-md border border-slate-200 px-3 py-2"
-              >
-                {classroom.name}
-              </div>
-            ))}
+            {classes.map((classroom) => {
+              const isSelected = classroom.id === selectedClassId;
+
+              return (
+                <button
+                  key={classroom.id}
+                  onClick={() => selectClass(classroom.id)}
+                  className={`w-full rounded-md border px-3 py-2 text-left ${
+                    isSelected
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-200 bg-white text-slate-900"
+                  }`}
+                >
+                  {classroom.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       }
@@ -44,9 +54,18 @@ export default function Home() {
         </div>
       }
     >
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8">
-        <p className="text-slate-600">Main workspace</p>
-      </div>
+      
+        {selectedClass ? (
+          <StudentList
+            className={selectedClass.name}
+            studentCount={selectedClass.students.length}
+          />
+        ) : (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8">
+            <p className="text-slate-600">No class selected</p>
+          </div>
+        )}
+      
     </AppShell>
   );
 }
